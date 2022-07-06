@@ -43,7 +43,7 @@ services:
         - "traefik.enable=true"
   
   mysql:
-    image: debezium/example-mysql:${DEBEZIUM_VERSION}
+    image: mysql:8.0
     environment:
      - MYSQL_ROOT_PASSWORD=debezium
      - MYSQL_USER=mysqluser
@@ -55,11 +55,12 @@ services:
           - node.role == manager
       labels:
         - "traefik.enable=true"
-        - "traefik.tcp.services.mysql-hive.loadbalancer.server.port=3306"
-        - "traefik.tcp.routers.mysql-hive.rule=HostSNI(`*`)"
-        - "traefik.tcp.routers.mysql-hive.entrypoints=mysql"
+        - "traefik.tcp.services.mysql.loadbalancer.server.port=3306"
+        - "traefik.tcp.routers.mysql.rule=HostSNI(`*`)"
+        - "traefik.tcp.routers.mysql.entrypoints=mysql"
     volumes:
-      - "./db/mysql/dump:/docker-entrypoint-initdb.d"
+      - "./app/mysql/dump:/docker-entrypoint-initdb.d"
+      - "./app/mysql/conf:/etc/mysql/conf.d"
   
   connect:
     image: debezium/connect:${DEBEZIUM_VERSION}
