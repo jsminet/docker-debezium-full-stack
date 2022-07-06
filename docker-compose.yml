@@ -22,10 +22,6 @@ services:
   
   zookeeper:
     image: debezium/zookeeper:${DEBEZIUM_VERSION}
-    ports:
-     - 2181:2181
-     - 2888:2888
-     - 3888:3888
     deploy:
       endpoint_mode: dnsrr
       placement:
@@ -36,8 +32,6 @@ services:
   
   kafka:
     image: debezium/kafka:${DEBEZIUM_VERSION}
-    ports:
-     - 9092:9092
     environment:
      - ZOOKEEPER_CONNECT=zookeeper:2181
     deploy:
@@ -69,8 +63,6 @@ services:
   
   connect:
     image: debezium/connect:${DEBEZIUM_VERSION}
-    ports:
-     - 8083:8083
     environment:
      - BOOTSTRAP_SERVERS=kafka:9092
      - GROUP_ID=1
