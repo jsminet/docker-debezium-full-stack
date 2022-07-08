@@ -77,3 +77,17 @@ services:
           - node.role == manager
       labels:
         - "traefik.enable=true"
+
+  debezium-ui:
+    image: debezium/debezium-ui:${DEBEZIUM_VERSION}
+    deploy:
+      endpoint_mode: dnsrr
+      placement:
+        constraints:
+          - node.role == manager
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.debezium.rule=Host(`$DEBEZIUM_UI_DNS`)"
+        - "traefik.http.routers.debezium.entrypoints=web"
+        - "traefik.http.routers.debezium.service=debezium"
+        - "traefik.http.services.debezium.loadbalancer.server.port=8080"
