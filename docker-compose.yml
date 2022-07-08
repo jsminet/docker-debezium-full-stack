@@ -80,6 +80,9 @@ services:
 
   debezium-ui:
     image: debezium/debezium-ui:${DEBEZIUM_VERSION}
+    environment:
+     - KAFKA_CONNECT_URIS=http://connect:8083
+     - DEPLOYMENT_MODE=default
     deploy:
       endpoint_mode: dnsrr
       placement:
