@@ -77,11 +77,15 @@ services:
           - node.role == manager
       labels:
         - "traefik.enable=true"
+        - "traefik.http.routers.connect.rule=Host(`$CONNECT_DNS`)"
+        - "traefik.http.routers.connect.entrypoints=web"
+        - "traefik.http.routers.connect.service=connect"
+        - "traefik.http.services.connect.loadbalancer.server.port=8083"
 
   debezium-ui:
     image: debezium/debezium-ui:${DEBEZIUM_VERSION}
     environment:
-     - KAFKA_CONNECT_URIS=http://connect:8083
+     - KAFKA_CONNECT_URIS=connect
      - DEPLOYMENT_MODE=default
     deploy:
       endpoint_mode: dnsrr
