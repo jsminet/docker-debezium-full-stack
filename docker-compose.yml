@@ -22,6 +22,7 @@ services:
   
   zookeeper:
     image: debezium/zookeeper:${DEBEZIUM_VERSION}
+    hostname: zookeeper
     deploy:
       endpoint_mode: dnsrr
       placement:
@@ -32,6 +33,7 @@ services:
   
   kafka:
     image: debezium/kafka:${DEBEZIUM_VERSION}
+    hostname: kafka
     environment:
      - ZOOKEEPER_CONNECT=zookeeper:2181
     deploy:
@@ -44,6 +46,7 @@ services:
   
   mysql:
     image: mysql:8.0
+    hostname: mysql
     environment:
      - MYSQL_ROOT_PASSWORD=debezium
      - MYSQL_USER=mysqluser
@@ -64,6 +67,7 @@ services:
   
   connect:
     image: debezium/connect:${DEBEZIUM_VERSION}
+    hostname: connect
     environment:
      - BOOTSTRAP_SERVERS=kafka:9092
      - GROUP_ID=1
@@ -77,15 +81,11 @@ services:
           - node.role == manager
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.connect.rule=Host(`$CONNECT_DNS`)"
-        - "traefik.http.routers.connect.entrypoints=web"
-        - "traefik.http.routers.connect.service=connect"
-        - "traefik.http.services.connect.loadbalancer.server.port=8083"
 
   debezium-ui:
     image: debezium/debezium-ui:${DEBEZIUM_VERSION}
     environment:
-     - KAFKA_CONNECT_URIS=connect
+     - KAFKA_CONNECT_URIS=http://connect:8083
      - DEPLOYMENT_MODE=default
     deploy:
       endpoint_mode: dnsrr
