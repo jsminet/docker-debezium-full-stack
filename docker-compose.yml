@@ -28,8 +28,6 @@ services:
       placement:
         constraints:
           - node.role == manager
-      labels:
-        - "traefik.enable=true"
   
   kafka:
     image: debezium/kafka:${DEBEZIUM_VERSION}
@@ -41,8 +39,6 @@ services:
       placement:
         constraints:
           - node.role == manager
-      labels:
-        - "traefik.enable=true"
   
   mysql:
     image: mysql:8.0
@@ -74,13 +70,13 @@ services:
      - CONFIG_STORAGE_TOPIC=my_connect_configs
      - OFFSET_STORAGE_TOPIC=my_connect_offsets
      - STATUS_STORAGE_TOPIC=my_connect_statuses
+     - ENABLE_DEBEZIUM_SCRIPTING=true
+     - CONNECT_REST_EXTENSION_CLASSES=io.debezium.kcrestextension.DebeziumConnectRestExtension
     deploy:
       endpoint_mode: dnsrr
       placement:
         constraints:
           - node.role == manager
-      labels:
-        - "traefik.enable=true"
 
   debezium-ui:
     image: debezium/debezium-ui:${DEBEZIUM_VERSION}
